@@ -1,0 +1,48 @@
+### Get Rates
+GET http://localhost:80/rate/api/movie/rate
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXJhIiwiZXhwIjoxNzA2OTkzMTUzfQ.elQtXwZF-HhQuwPYQGOIyJV0I6BluY_FqTQCfiuwokfT9jZiZYB5NM68fIE5paMeZzKBvVuKZxR6oYlAhHnOrA
+
+### Get Rate Of Movie By Id
+# /rate/api/movie/rate/{id}
+GET http://localhost:80/rate/api/movie/rate/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXJhIiwiZXhwIjoxNzA2OTkzMTUzfQ.elQtXwZF-HhQuwPYQGOIyJV0I6BluY_FqTQCfiuwokfT9jZiZYB5NM68fIE5paMeZzKBvVuKZxR6oYlAhHnOrA
+
+### Rate to movie
+POST http://localhost:80/rate/api/movie/rate
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbGkiLCJleHAiOjE3MDcwMDIwNDB9.7LvM-7U8aYfy3fTMCzovfgD45MaiypStRMZ8nSF9eNTgM5jzKg381m3TZaOPqZo0oTRdRHNfLUptC79I93luwA
+
+{
+  "id": 0,
+  "movieId": 1,
+  "rate": 6.2
+}
+
+
+### Examples
+#
+### Ali Rate to movie 1
+POST http://localhost:80/rate/api/movie/rate
+Content-Type: application/json
+# this token is for ali
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbGkiLCJleHAiOjE3MDcwMDIwNDB9.7LvM-7U8aYfy3fTMCzovfgD45MaiypStRMZ8nSF9eNTgM5jzKg381m3TZaOPqZo0oTRdRHNfLUptC79I93luwA
+
+{
+  "id": 0,
+  "movieId": 1,
+  "rate": 6.2
+}
+
+### Sara to movie 1
+POST http://localhost:80/rate/api/movie/rate
+Content-Type: application/json
+# this token is for sara
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXJhIiwiZXhwIjoxNzA3MDAyMDY4fQ.uMKowEBWj3aXF-zZmyjz9iWPh36YrZId7rAp9fKPR_L5HhHqFzZ2qzfvxH90yOD_q8LPTk3NBe4oS1R3XPb69g
+
+{
+  "id": 0,
+  "movieId": 1,
+  "rate": 7.2
+}

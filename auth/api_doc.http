@@ -1,0 +1,19 @@
+### User signe up
+POST http://localhost:80/auth/api/users/signup
+Content-Type: application/json
+
+{
+  "id": 0,
+  "username": "user",
+  "password": "password"
+}
+
+### User login
+POST http://localhost:80/auth/api/users/login
+Content-Type: application/json
+
+{
+  "id": 0,
+  "username": "user",
+  "password": "password"
+}

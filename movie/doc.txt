@@ -1,0 +1,22 @@
+ --- Auth ---
+ token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXJhIiwiZXhwIjoxNzA2OTkzMTUzfQ.elQtXwZF-HhQuwPYQGOIyJV0I6BluY_FqTQCfiuwokfT9jZiZYB5NM68fIE5paMeZzKBvVuKZxR6oYlAhHnOrA
+ expire: 10 day
+
+ --- Get movies ---
+
+
+curl -H "Authorization: Bearer your_token" http://localhost:8081/api/movie
+
+
+
+
+ --- Get movie by id ---
+
+curl -H "Authorization: Bearer your_token" http://localhost:8081/api/movie/1
+
+
+
+
+ --- Add movie ---
+
+curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer your_token" -d '{"name":"Interstellar","description":"Sci-Fi masterpiece"}' http://localhost:8081/api/movie

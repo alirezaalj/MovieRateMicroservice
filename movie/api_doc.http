@@ -1,0 +1,22 @@
+### Get Movies List
+GET http://localhost:80/movie/api/movie
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXJhIiwiZXhwIjoxNzA2OTkzMTUzfQ.elQtXwZF-HhQuwPYQGOIyJV0I6BluY_FqTQCfiuwokfT9jZiZYB5NM68fIE5paMeZzKBvVuKZxR6oYlAhHnOrA
+
+
+### Get movie detail by Id
+GET http://localhost:80/movie/api/movie/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZXphIiwiZXhwIjoxNzA2OTk2ODI0fQ.5eLonVV5Oc6Hjh7cJRKTrxoiAWa4us6DC_FSIq4W9OsvIQQLab0srKRoRpfX6wpeX7XzdOrCbCC6MfSTyL6e7g
+
+
+### Add movie
+POST http://localhost:80/movie/api/movie
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzYXJhIiwiZXhwIjoxNzA2OTkzMTUzfQ.elQtXwZF-HhQuwPYQGOIyJV0I6BluY_FqTQCfiuwokfT9jZiZYB5NM68fIE5paMeZzKBvVuKZxR6oYlAhHnOrA
+
+{
+  "id": 0,
+  "name": "Movie name",
+  "description": "dummy text"
+}
