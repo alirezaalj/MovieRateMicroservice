@@ -10,13 +10,14 @@ services:
       - '80:80'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Mount your custom Nginx configuration file
+      - ./nginx/web:/usr/share/nginx/html
     networks:
       - app_network
 
-  ##        Auth microservice  with one instance of pg db   ###
-  postgres_db_auth:
-    hostname: postgres_db_auth
-    container_name: postgres_db_auth
+  ##        PostgreSQL Database   ###
+  postgres_db:
+    hostname: postgres_db
+    container_name: postgres_db
     image: postgres:14.10
     restart: always
     healthcheck:
@@ -29,17 +30,18 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=auth_dev
+      - POSTGRES_DB=moviedb
     networks:
       - app_network
 
+  ##        Microservices   ###
   auth:
     hostname: movie-auth
     container_name: movie-auth
     image: movie_auth:dev
     restart: unless-stopped
     depends_on:
-      postgres_db_auth:
+      postgres_db:
         condition: service_healthy
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
@@ -47,7 +49,7 @@ services:
       # application
       - APP_JWT-SECRET=ZmlsbVJhdGVBcHBTZWNyZXRLZXktZmlsbVJhdGVBcHBTZWNyZXRLZXktZmlsbVJhdGVBcHBTZWNyZXRLZXktZmlsbVJhdGVBcHBTZWNyZXRLZXk=
       # datasource
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db_auth:5432/auth_dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/moviedb
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
     ports:
@@ -56,33 +58,13 @@ services:
      - app_network
 
 
-  ##        Movie microservice  with one instance of pg db   ###
-  postgres_db_movie:
-    hostname: postgres_db_movie
-    container_name: postgres_db_movie
-    image: postgres:14.10
-    restart: always
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    ports:
-      - 5433:5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=movie_dev
-    networks:
-      - app_network
-
   movie:
     hostname: movie
     container_name: movie
     image: movie:dev
     restart: unless-stopped
     depends_on:
-      postgres_db_movie:
+      postgres_db:
         condition: service_healthy
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
@@ -91,7 +73,7 @@ services:
       - APP_JWT-SECRET=ZmlsbVJhdGVBcHBTZWNyZXRLZXktZmlsbVJhdGVBcHBTZWNyZXRLZXktZmlsbVJhdGVBcHBTZWNyZXRLZXktZmlsbVJhdGVBcHBTZWNyZXRLZXk=
       - app.movie.rate.host=http://movie-rate
       # datasource
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db_movie:5432/movie_dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/moviedb
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
     ports:
@@ -99,33 +81,13 @@ services:
     networks:
      - app_network
 
-
-  ##        MOvie Rate microservice  with one instance of pg db   ###
-  postgres_db_rate:
-    hostname: postgres_db_rate
-    container_name: postgres_db_rate
-    image: postgres:14.10
-    restart: always
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    ports:
-      - 5434:5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=movie_rate_dev
-    networks:
-      - app_network
   rate:
     hostname: movie-rate
     container_name: movie-rate
     image: movie_rate:dev
     restart: unless-stopped
     depends_on:
-      postgres_db_rate:
+      postgres_db:
         condition: service_healthy
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
@@ -133,7 +95,7 @@ services:
       # application
       - APP_JWT-SECRET=ZmlsbVJhdGVBcHBTZWNyZXRLZXktZmlsbVJhdGVBcHBTZWNyZXRLZXktZmlsbVJhdGVBcHBTZWNyZXRLZXktZmlsbVJhdGVBcHBTZWNyZXRLZXk=
       # datasource
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db_rate:5432/movie_rate_dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db:5432/moviedb
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
     ports:

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movie Details</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    .movie-details {
+        margin-bottom: 20px;
+    }
+
+    .rate-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .rate-item {
+        margin-bottom: 10px;
+    }
+
+    .rate-item span {
+        font-weight: bold;
+    }
+
+    .rate-form {
+        margin-top: 20px;
+    }
+
+    .rate-form label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .rate-form input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .rate-form input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Movie Details</h2>
+    <div class="movie-details" id="movieDetails"></div>
+    <h3>Rates</h3>
+    <ul class="rate-list" id="rateList"></ul>
+    <div class="rate-form" id="rateForm">
+        <h3>Rate this Movie</h3>
+        <form id="movieRatingForm">
+            <label for="rating">Rating (0-10):</label>
+            <input type="number" id="rating" name="rating" min="0" max="10" step="0.1" required>
+            <input type="submit" value="Submit">
+        </form>
+        <div class="message" id="rateMessage"></div>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const movieId = urlParams.get('id');
+
+    const movieDetailsDiv = document.getElementById("movieDetails");
+    const rateList = document.getElementById("rateList");
+    const token = sessionStorage.getItem("token");
+
+    // Function to fetch movie details and rates
+    function fetchMovieDetails() {
+        fetch(`http://localhost:80/movie/api/movie/${movieId}`,{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display movie details
+            const movieDetailsHTML = `
+                <p><span>Name:</span> ${data.name}</p>
+                <p><span>Description:</span> ${data.description}</p>
+                <p><span>Rate:</span> ${data.rate}</p>
+            `;
+            movieDetailsDiv.innerHTML = movieDetailsHTML;
+
+            // Display rates
+            rateList.innerHTML = ""; // Clear previous rates
+            data.rates.forEach(rate => {
+                const rateItem = document.createElement("li");
+                rateItem.classList.add("rate-item");
+                rateItem.innerHTML = `<span>User:</span> ${rate.username}, <span>Rate:</span> ${rate.rate}`;
+                rateList.appendChild(rateItem);
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching movie details:", error);
+        });
+    }
+
+    // Fetch movie details when the page loads
+    fetchMovieDetails();
+
+    // Function to handle form submission for rating
+    document.getElementById("movieRatingForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const rating = parseFloat(document.getElementById("rating").value);
+
+        fetch("http://localhost:80/rate/api/movie/rate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                movieId: movieId,
+                rate: rating
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById("rateMessage").innerHTML = "<span>Rating submitted successfully!</span>";
+                fetchMovieDetails(); // Fetch updated movie details after rating submission
+            } else {
+                throw new Error('Failed to submit rating.');
+            }
+        })
+        .catch(error => {
+            document.getElementById("rateMessage").innerHTML = "<span class='error'>Failed to submit rating. Please try again later.</span>";
+        });
+    });
+</script>
+</body>
+</html>
