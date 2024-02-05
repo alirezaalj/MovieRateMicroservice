@@ -19,7 +19,9 @@ services:
     hostname: postgres_db
     container_name: postgres_db
     image: postgres:14.10
+    # restart container if crash
     restart: always
+    # checking is postgresql is helthy and ready
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
       interval: 10s
@@ -27,10 +29,13 @@ services:
       retries: 5
     ports:
       - 5432:5432
+    # enviroments for postgresql database
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=moviedb
+    volumes:
+      - movie_postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
 
@@ -40,9 +45,13 @@ services:
     container_name: movie-auth
     image: movie_auth:dev
     restart: unless-stopped
+    # start service after hecking if postgres is ready
     depends_on:
       postgres_db:
         condition: service_healthy
+    build:
+      context: auth
+      dockerfile: Dockerfile
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SERVER_PORT=80
@@ -66,6 +75,9 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
+    build:
+      context: auth
+      dockerfile: Dockerfile
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SERVER_PORT=80
@@ -89,6 +101,9 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
+    build:
+      context: auth
+      dockerfile: Dockerfile
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SERVER_PORT=80
@@ -104,7 +119,7 @@ services:
      - app_network
 
 volumes:
-  postgres:
+  movie_postgres_data:
     driver: local
 
 networks:

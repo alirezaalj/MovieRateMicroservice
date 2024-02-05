@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the JAR file to the container
 COPY target/movie_rate-0.0.1-SNAPSHOT.jar /app/application.jar
 
-# Expose port 53 for the application DNS service to listen on
+# Expose port 8082 for the application
 EXPOSE 8082
 
 # Start the Java application

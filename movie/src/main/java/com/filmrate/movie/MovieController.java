@@ -62,6 +62,7 @@ public class MovieController {
 
     @PostMapping
     public void addMovie(@RequestBody Movie movie){
+        System.out.println("Addming new movie");
         movie.setId(0);
         movieRepository.save(movie);
     }
